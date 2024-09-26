@@ -23,8 +23,8 @@
 
 /************************* WiFi Access Point *********************************/
 
-#define WLAN_SSID "Clovis 2.4G"
-#define WLAN_PASS "99143304"
+#define WLAN_SSID ""
+#define WLAN_PASS ""
 
 /************************* Adafruit.io Setup *********************************/
 
@@ -36,7 +36,7 @@
 // Adafruit IO Account Configuration
 // (to obtain these values, visit https://io.adafruit.com and click on Active Key)
 #define AIO_USERNAME "clovisf"
-#define AIO_KEY      "b7a273ff14c04eb799f525ab07316d94"
+#define AIO_KEY      ""
 
 /************ Global State (you don't need to change this!) ******************/
 
@@ -84,6 +84,7 @@ const char* adafruitio_root_ca = \
 /****************************** Feeds ***************************************/
 
 long oldtime;
+long oldtimeled;
 
 // Setup a feed called 'test' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
@@ -93,6 +94,7 @@ Adafruit_MQTT_Publish humidityreadings = Adafruit_MQTT_Publish(&mqtt, AIO_USERNA
 
 void setup() {
   Serial.begin(115200);
+  pinMode(15, OUTPUT);
   delay(10);
 
   Serial.println(F("Adafruit IO MQTTS (SSL/TLS) Example"));
@@ -130,6 +132,10 @@ uint32_t x=0;
 
 void loop() {
 
+  if(millis() - oldtimeled > 200){
+    oldtimeled= millis();
+    digitalWrite(15, !digitalRead(15));
+  }
   if(millis() - oldtime >= 60000){
     oldtime= millis();
   
