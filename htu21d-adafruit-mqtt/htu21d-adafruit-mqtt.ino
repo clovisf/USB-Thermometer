@@ -83,6 +83,8 @@ const char* adafruitio_root_ca = \
 
 /****************************** Feeds ***************************************/
 
+long oldtime;
+
 // Setup a feed called 'test' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
 Adafruit_MQTT_Publish temperaturereadings = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temperaturereadings");
@@ -127,30 +129,34 @@ void setup() {
 uint32_t x=0;
 
 void loop() {
-  // Ensure the connection to the MQTT server is alive (this will make the first
-  // connection and automatically reconnect when disconnected).  See the MQTT_connect
-  // function definition further below.
-  MQTT_connect();
 
-  float temp = htu.readTemperature();
-  float hum = htu.readHumidity();
-  // Now we can publish stuff!
-  Serial.print(F("\nSending val "));
-  Serial.print(temp);
-  Serial.print(F(" to test feed..."));
-  if (! temperaturereadings.publish(temp)) {
-    Serial.println(F("Failed"));
-  } else {
-    Serial.println(F("OK!"));
-  }
-  if (! humidityreadings.publish(hum)) {
-    Serial.println(F("Failed"));
-  } else {
-    Serial.println(F("OK!"));
-  }
+  if(millis() - oldtime >= 60000){
+    oldtime= millis();
+  
+    // Ensure the connection to the MQTT server is alive (this will make the first
+    // connection and automatically reconnect when disconnected).  See the MQTT_connect
+    // function definition further below.
+    MQTT_connect();
 
-  // wait a couple seconds to avoid rate limit
-  delay(10000);
+    float temp = htu.readTemperature();
+    float hum = htu.readHumidity();
+    // Now we can publish stuff!
+    Serial.print(F("\nSending val "));
+    Serial.print(temp);
+    Serial.print(F(" to test feed..."));
+    if (! temperaturereadings.publish(temp)) {
+      Serial.println(F("Failed"));
+    } else {
+      Serial.println(F("OK!"));
+    }
+    if (! humidityreadings.publish(hum)) {
+      Serial.println(F("Failed"));
+    } else {
+      Serial.println(F("OK!"));
+    }
+  }
+  
+  
 
 }
 
