@@ -19,13 +19,13 @@ long oldtime2;
 #include <WiFi.h>
 #include "ThingSpeak.h"
 
-const char* ssid = "Clovis 2.4G";   // your network SSID (name) 
-const char* password = "99143304";   // your network password
+const char* ssid = "";   // your network SSID (name) 
+const char* password = "";   // your network password
 
 WiFiClient  client;
 
 unsigned long myChannelNumber = 2515409;
-const char * myWriteAPIKey = "Z3YRH78K0AFE6HLU";
+const char * myWriteAPIKey = "";
 
 // Connect Vin to 3-5VDC
 // Connect GND to ground
