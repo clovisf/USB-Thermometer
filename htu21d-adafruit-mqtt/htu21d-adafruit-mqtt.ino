@@ -23,8 +23,8 @@
 
 /************************* WiFi Access Point *********************************/
 
-#define WLAN_SSID ""
-#define WLAN_PASS ""
+#define WLAN_SSID "Clovis 2.4G"
+#define WLAN_PASS "99143304"
 
 /************************* Adafruit.io Setup *********************************/
 
@@ -36,7 +36,7 @@
 // Adafruit IO Account Configuration
 // (to obtain these values, visit https://io.adafruit.com and click on Active Key)
 #define AIO_USERNAME "clovisf"
-#define AIO_KEY      ""
+#define AIO_KEY      "b7a273ff14c04eb799f525ab07316d94"
 
 /************ Global State (you don't need to change this!) ******************/
 
