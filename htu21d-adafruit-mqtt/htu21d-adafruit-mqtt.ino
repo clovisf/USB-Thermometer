@@ -132,6 +132,26 @@ uint32_t x=0;
 
 void loop() {
 
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi not connected! Attempting reconnect...");
+    WiFi.disconnect();
+    WiFi.begin(WLAN_SSID, WLAN_PASS);
+    unsigned long startAttemptTime = millis();
+
+    // Wait until connected or timeout (10 seconds)
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 10000) {
+      delay(500);
+      Serial.print(".");
+    }
+
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("Reconnected to WiFi!");
+    } else {
+      Serial.println("Failed to reconnect WiFi. Will retry later.");
+      return; // Skip rest of loop if WiFi isn't working
+    }
+  }
+
   if(millis() - oldtimeled > 200){
     oldtimeled= millis();
     digitalWrite(15, !digitalRead(15));
@@ -178,18 +198,17 @@ void MQTT_connect() {
 
   Serial.print("Connecting to MQTT... ");
 
-  uint8_t retries = 300;
+  uint8_t retries = 3; // Only try a few times to reconnect
   while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
-       Serial.println(mqtt.connectErrorString(ret));
-       Serial.println("Retrying MQTT connection in 5 seconds...");
-       mqtt.disconnect();
-       delay(5000);  // wait 5 seconds
-       MQTT_connect();
-       retries--;
-       /*if (retries == 0) {
-         // basically die and wait for WDT to reset me
-         while (1);
-       }*/
+    Serial.println(mqtt.connectErrorString(ret));
+    Serial.println("Retrying MQTT connection in 5 seconds...");
+    mqtt.disconnect();
+    delay(5000);  // wait 5 seconds
+    retries--;
+    if (retries == 0) {
+      Serial.println("MQTT connection failed after retries.");
+      return; // Give up and return. We will try again in next loop
+    }
   }
 
   Serial.println("MQTT Connected!");
